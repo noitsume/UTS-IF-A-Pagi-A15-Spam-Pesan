@@ -1,0 +1,94 @@
+# UTS IF A Pagi - A15 Spam Pesan
+
+Kelompok kami membandingkan dua pendekatan **classical machine learning** untuk mengenali SMS biasa (*ham*) dan spam dari isi pesannya. Pada UTS Milestone 1 ini, kami menyiapkan data, membuat fitur TF-IDF, lalu menguji Logistic Regression sebagai baseline dan Linear SVM sebagai kandidat. Kami juga mencoba beberapa SMS sendiri untuk melihat apakah perubahan ejaan ikut mengubah prediksi.
+
+## Identitas kelompok
+
+| Keterangan | Isi |
+|---|---|
+| Project ID | A15 |
+| Nama kelompok / proyek | A15 - Spam Pesan |
+| Kelas | IF A Pagi |
+| Mata kuliah | Machine Learning |
+| Tahap | UTS Milestone 1 |
+| Program studi | S-1 Teknik Informatika, Universitas Mikroskil |
+
+| Nama anggota | NIM |
+|---|---|
+| Julian Caesar Eben Ezer Simorangkir | 231111575 |
+| Howard Farrel Hura | 231111644 |
+| Kevin Luther Kiyosaki Gultom | 231111131 |
+
+Kode, penjelasan, dan keluaran tiap tahap bisa dilihat langsung di [notebook](Spam_SMS_UTS.ipynb).
+
+## Menjalankan notebook
+
+1. Unduh repository lewat **Code → Download ZIP**, lalu ekstrak seluruh isinya. Buka terminal di folder yg berisi `Spam_SMS_UTS.ipynb`, `requirements.txt`, dan `data/`.
+2. Siapkan **Python 3.12**. Kami menyarankan environment terpisah supaya versi pustaka tugas ini tidak bercampur dengan proyek lain. Dengan Python 3.12 yg sudah aktif, jalankan:
+
+   ```sh
+   python -m venv .venv
+   ```
+
+   Aktifkan lewat `.venv\Scripts\activate.bat` di Command Prompt Windows, atau `source .venv/bin/activate` di terminal macOS/Linux. Jika memakai VS Code, pilih interpreter Python di dalam `.venv`.
+
+3. Pasang pustaka dari terminal environment tersebut:
+
+   ```sh
+   python -m pip install -r requirements.txt
+   ```
+
+4. Buka notebook di VS Code dengan ekstensi Jupyter, pilih kernel dari environment tadi, lalu jalankan **Restart Kernel → Run All**. Jika memakai JupyterLab, jalankan:
+
+   ```sh
+   python -m pip install jupyterlab
+   python -m jupyterlab Spam_SMS_UTS.ipynb
+   ```
+
+Kedua CSV sumber sudah disertakan, jadi tidak perlu mengunduh dataset lagi. Folder proyek boleh dipindahkan atau diganti namanya selama susunan di dalamnya tetap utuh. Kode memakai path relatif, berjalan di CPU, dan akan melatih ulang kedua model saat **Run All**. Instalasi pustaka memerlukan internet; proses eksperimen membaca data lokal.
+
+Untuk mencoba pesan lain setelah training, ubah daftar `pesan_sendiri` di bagian 8 dan jalankan sel itu saja. Hasilnya masuk ke `hasil/prediksi_sendiri/`.
+
+## Dataset dan pembagian data
+
+Kami memakai **Super SMS Dataset** dari Salman, Ikram, dan Kaafar (2024), berisi 67.010 baris mentah dengan label `0 = ham` dan `1 = spam`. Sumber, versi berkas, dan fungsi kedua CSV dijelaskan di [dokumentasi dataset](data/README.md).
+
+Setelah pembersihan awal dan pengeluaran pola yg muncul lintas bagian, tersisa **66.288 SMS**: 46.301 untuk train, 9.955 untuk validation, dan 10.032 untuk test. Kedua model memakai pembagian data serta tiga fold yg sama. **Data test belum dipakai untuk evaluasi pada UTS ini.**
+
+## Hasil eksperimen awal
+
+Kami memakai macro-F1 sebagai metrik utama agar kelas ham dan spam mendapat bobot yg sama. Validasi silang memakai **StratifiedGroupKFold 3-fold di dalam train**. Setelah itu, masing-masing model dilatih ulang pada seluruh train dan dievaluasi pada validation terpisah.
+
+| Peran dan konfigurasi | Macro-F1 CV, rata-rata ± simpangan baku | Macro-F1 validation | Accuracy validation |
+|---|---:|---:|---:|
+| Baseline: Logistic Regression + TF-IDF kata | 0,9820 ± 0,0013 | 0,9798 | 0,9808 |
+| Kandidat: Linear SVM + TF-IDF kata dan karakter | 0,9909 ± 0,0014 | 0,9897 | 0,9902 |
+
+Angka tersebut berasal dari [hasil_validasi.csv](hasil/evaluasi/hasil_validasi.csv); rincian tiap fold ada di [cv_per_fold.csv](hasil/evaluasi/cv_per_fold.csv). Pada validation, kandidat keliru menandai 29 SMS biasa sebagai spam dan meloloskan 69 spam. Rinciannya bisa diperiksa pada [prediksi per SMS](hasil/evaluasi/prediksi_validasi.csv).
+
+Kandidat memberi skor lebih tinggi pada percobaan ini. Namun, yg dibandingkan adalah model sekaligus representasi fiturnya, sehingga kenaikan skor belum bisa dianggap berasal dari algoritma SVM saja. Percobaan ejaan samaran juga masih berupa contoh awal, belum pengujian ketahanan secara menyeluruh.
+
+## Isi repository
+
+| Lokasi | Isi dan kegunaannya |
+|---|---|
+| `Spam_SMS_UTS.ipynb` | Alur percobaan beserta penjelasan dan hasil eksekusi. |
+| `requirements.txt` | Versi pustaka yg dipakai untuk menjalankan notebook. |
+| `data/` | Dataset mentah, pembagian awal, dan dokumentasi sumber data. |
+| `hasil/preprocessing/` | Pembagian akhir serta catatan baris dan pola yg dikeluarkan. |
+| `hasil/eda/` | Grafik distribusi kelas dan panjang SMS pada train. |
+| `hasil/model/` | Dua pipeline terlatih beserta konfigurasi, seed, hash dataset, dan versi pustaka. |
+| `hasil/evaluasi/` | Tabel perbandingan, skor per fold, confusion matrix, classification report, dan prediksi validation. |
+| `hasil/learning_curve/` | Grafik dan tabel perubahan skor saat jumlah data latih ditambah. |
+| `hasil/prediksi_sendiri/` | Prediksi untuk pesan yg dimasukkan pada bagian 8. |
+
+File model Logistic Regression berukuran sekitar **1,39 MB**, sedangkan Linear SVM **3,51 MB**. Masing-masing sudah memuat TF-IDF dan modelnya. **Run All** memperbarui keluaran di folder `hasil/`; waktu training bisa berbeda sesuai komputer yg dipakai.
+
+## Rencana setelah UTS
+
+1. Nantinya kami akan memperbanyak pasangan SMS asli dan ejaan samaran, lalu menghitung berapa prediksi yg berubah pada validation.
+2. Kami akan mencoba normalisasi ejaan seperti `D1scount` menjadi `Discount` sambil menjaga angka yg punya arti, misalnya `40%`.
+3. Kesalahan prediksi akan kami periksa per pola untuk menentukan penyesuaian fitur atau parameter melalui validasi silang di train.
+4. Setelah konfigurasi akhir ditetapkan, kami akan mengevaluasinya pada test yg sudah disisihkan.
+
+Rencana tersebut belum menjadi hasil eksperimen pada tahap UTS ini.

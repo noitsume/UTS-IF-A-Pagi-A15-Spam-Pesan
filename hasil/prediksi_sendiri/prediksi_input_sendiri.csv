@@ -1,0 +1,8 @@
+Pesan,Prediksi,Skor SVM,Ada persis di dataset,Ada persis di train
+Cool. Whats next ?,Ham,-1.547557782945931,True,False
+C00L ! Wh4ts Next?,Ham,-1.385471821839146,False,False
+Discount 40% in every product just for today!,Spam,0.12071146097066143,False,False
+D1scount 40% in every pr0duct just for t0day!,Ham,-0.17602326648284028,False,False
+"Mira, please bring the blue notebook to our meeting at 6:15.",Ham,-0.8047471975465799,False,False
+"M1ra, please br1ng the blue n0tebook to our meeting at 6:15.",Ham,-0.8521670269447885,False,False
+You have been selected for a free travel voucher. Send your card details to claim it now.,Spam,1.3684131302543925,False,False
