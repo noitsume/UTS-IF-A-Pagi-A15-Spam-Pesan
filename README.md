@@ -24,7 +24,16 @@ Kode, penjelasan, dan keluaran tiap tahap bisa dilihat langsung di [notebook](UT
 ## Menjalankan notebook
 
 1. Unduh repository lewat **Code → Download ZIP**, lalu ekstrak seluruh isinya. Buka folder hasil ekstrak di VS Code. Notebook, `requirements.txt`, dan `data/` harus tetap berdampingan.
-2. Siapkan **Python 3.12**, lalu buat environment dan pasang seluruh pustaka dari terminal di folder proyek. Gunakan perintah sesuai sistem operasi:
+2. Siapkan **Python 3.12** serta ekstensi Python dan Jupyter di VS Code.
+3. Buka `UTS-Notebook.ipynb`, klik **Select Kernel** di kanan atas, lalu pilih **Python 3.12**. Jika belum terlihat, buka **Select Another Kernel → Python Environments**. Kalau VS Code meminta pemasangan `ipykernel`, selesaikan pemasangannya terlebih dahulu.
+4. Pilih **Restart Kernel → Run All**. Sel pertama memeriksa dan memasang seluruh dependensi sebelum eksperimen dimulai. Tunggu sampai muncul **Dependensi siap**. Jika diminta restart setelah instalasi, pilih **Restart Kernel → Run All** sekali lagi.
+
+Lokasi Python dan folder instalasi dicari otomatis. Pada Python umum, paket dipasang ke folder pengguna dengan `--user`, sehingga tidak perlu menulis ke folder instalasi Python yg dilindungi Windows. Kalau kernel memakai virtual environment, paket dipasang ke environment tersebut. Nomor versi tetap mengikuti `requirements.txt`.
+
+<details>
+<summary>Pilihan tambahan: memakai .venv atau JupyterLab</summary>
+
+Untuk memisahkan pustaka proyek ini dari tugas lain, buat `.venv` dari terminal di folder proyek:
 
    **Windows (PowerShell atau Command Prompt):**
 
@@ -40,10 +49,7 @@ Kode, penjelasan, dan keluaran tiap tahap bisa dilihat langsung di [notebook](UT
    ./.venv/bin/python -m pip install -r requirements.txt
    ```
 
-   Perintah instalasi langsung memakai Python di `.venv`, sehingga tidak bergantung pada environment yg aktif di terminal. Jika Python 3.12 belum ditemukan, pasang versi tersebut terlebih dahulu.
-
-3. Buka `UTS-Notebook.ipynb` dengan ekstensi Python dan Jupyter di VS Code. Klik **Select Kernel** di kanan atas notebook, lalu **Select Another Kernel → Python Environments → .venv (Python 3.12)**. Kalau daftar kernel langsung menampilkan `.venv`, pilih itu. Pemilihan interpreter di terminal/status bar saja belum memastikan kernel notebook sudah sama.
-4. Setelah instalasi selesai tanpa error dan kernel sudah sesuai, pilih **Restart Kernel → Run All**.
+Perintah instalasi langsung memakai Python di `.venv`. Setelah selesai, pilih kernel **.venv (Python 3.12)** pada notebook, lalu **Restart Kernel → Run All**. Pemilihan Python di terminal saja belum memastikan kernel notebook sudah sama.
 
 Jika memakai JupyterLab, jalankan dua perintah berikut di Windows. Untuk macOS/Linux, ganti `.\.venv\Scripts\python.exe` dengan `./.venv/bin/python`.
 
@@ -52,24 +58,23 @@ Jika memakai JupyterLab, jalankan dua perintah berikut di Windows. Untuk macOS/L
 .\.venv\Scripts\python.exe -m jupyterlab UTS-Notebook.ipynb
 ```
 
-Kedua CSV sumber sudah disertakan, jadi tidak perlu mengunduh dataset lagi. Folder proyek boleh dipindahkan atau diganti namanya selama susunan di dalamnya tetap utuh. Kode memakai path relatif, berjalan di CPU, dan akan melatih ulang kedua model saat **Run All**. Instalasi pustaka memerlukan internet; proses eksperimen membaca data lokal.
+</details>
+
+Kedua CSV sumber sudah disertakan, jadi tidak perlu mengunduh dataset lagi. Folder proyek boleh dipindahkan atau diganti namanya selama susunan di dalamnya tetap utuh. Jika folder dipindahkan setelah `.venv` dibuat, buat ulang environment tersebut di lokasi baru. Kode memakai path relatif, berjalan di CPU, dan akan melatih ulang kedua model saat **Run All**. Instalasi pustaka memerlukan internet; proses eksperimen membaca data lokal. Kalau semua dependensi sudah sesuai, sel persiapan tidak menjalankan instalasi lagi.
 
 Untuk mencoba pesan lain setelah training, ubah daftar `pesan_sendiri` di bagian 8 dan jalankan sel itu saja. Hasilnya masuk ke `hasil/prediksi_sendiri/`.
 
-### Jika muncul `ModuleNotFoundError`
+### Pemeriksaan dependensi di awal notebook
 
-Contohnya, `No module named 'joblib'` berarti kernel belum bisa mengimpor modul itu. Walaupun `pip install joblib` berhasil di terminal, paketnya bisa terpasang pada Python yg berbeda. `joblib` sudah tercantum di `requirements.txt` bersama pustaka lain yg dibutuhkan.
+Sel **Menyiapkan dependensi** menampilkan lokasi Python kernel dan versi Python, lalu memeriksa seluruh requirements, termasuk `joblib`, `nbformat`, dan `nbclient`. Instalasi memakai [`sys.executable -m pip`](https://pip.pypa.io/en/stable/user_guide/#using-pip-from-your-program), sehingga mengikuti Python yg sedang menjalankan notebook. [Instalasi per pengguna](https://pip.pypa.io/en/stable/user_guide/#user-installs) dipakai otomatis saat kernel berjalan pada Python umum.
 
-Setelah memilih kernel `.venv` dengan Python 3.12, tambahkan **sel kode sementara di notebook** dan jalankan:
+Sel baru menampilkan **Dependensi siap** setelah versi cocok dan semua pustaka berhasil diimpor. Lokasi modul `joblib` ikut ditampilkan supaya bisa ditelusuri.
 
-```python
-import sys
-print(sys.executable)
-print(sys.version.split()[0])
-%pip install -r requirements.txt
-```
+- **Diminta restart:** pilih **Restart Kernel → Run All**. Ini diperlukan kalau kernel masih menyimpan versi lama di memori setelah instalasi.
+- **Instalasi gagal:** notebook berhenti dan menampilkan pesan pip lengkap. Periksa koneksi internet, izin folder pengguna, serta kernel Python 3.12 yg dipilih. Jika environment yg dipakai bermasalah atau menonaktifkan paket pengguna, gunakan pilihan `.venv` di atas.
+- **Masih muncul `ModuleNotFoundError` atau `PackageNotFoundError`:** pastikan memakai notebook terbaru dan menjalankan dari sel pertama. Untuk pemeriksaan lanjutan, sertakan lokasi Python kernel beserta seluruh output sel dependensi, bukan hanya baris error terakhir.
 
-Path yg tercetak seharusnya mengarah ke `.venv` proyek. [`%pip`](https://ipython.readthedocs.io/en/stable/interactive/magics.html#magic-pip) memasang paket ke Python milik kernel tersebut. Tunggu sampai instalasi berhasil, hapus sel sementara, lalu **Restart Kernel → Run All**. Jika instalasi gagal, periksa pesan error instalasinya dulu; mengulang Run All belum akan memperbaiki paket yg belum terpasang.
+`requirements.txt` mencatat pustaka yg dibutuhkan; paketnya baru dipasang ketika perintah instalasi atau sel persiapan dijalankan. Error `WinError 5` pada folder Python umum berarti instalasi sebelumnya terhenti karena izin akses. Mengulang sel konfigurasi belum melengkapi paket yg gagal dipasang.
 
 ## Dataset dan pembagian data
 
