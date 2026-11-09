@@ -19,11 +19,11 @@ Kelompok kami membandingkan dua pendekatan **classical machine learning** untuk 
 | Howard Farrel Hura | 231111644 |
 | Kevin Luther Kiyosaki Gultom | 231111131 |
 
-Kode, penjelasan, dan keluaran tiap tahap bisa dilihat langsung di [notebook](Spam_SMS_UTS.ipynb).
+Kode, penjelasan, dan keluaran tiap tahap bisa dilihat langsung di [notebook](UTS-Notebook.ipynb). Pembahasan lengkapnya ada di [laporan UTS](Laporan/UTS-Laporan.pdf).
 
 ## Menjalankan notebook
 
-1. Unduh repository lewat **Code → Download ZIP**, lalu ekstrak seluruh isinya. Buka terminal di folder yg berisi `Spam_SMS_UTS.ipynb`, `requirements.txt`, dan `data/`.
+1. Unduh repository lewat **Code → Download ZIP**, lalu ekstrak seluruh isinya. Buka terminal di folder yg berisi `UTS-Notebook.ipynb`, `requirements.txt`, dan `data/`.
 2. Siapkan **Python 3.12**. Kami menyarankan environment terpisah supaya versi pustaka tugas ini tidak bercampur dengan proyek lain. Dengan Python 3.12 yg sudah aktif, jalankan:
 
    ```sh
@@ -42,7 +42,7 @@ Kode, penjelasan, dan keluaran tiap tahap bisa dilihat langsung di [notebook](Sp
 
    ```sh
    python -m pip install jupyterlab
-   python -m jupyterlab Spam_SMS_UTS.ipynb
+   python -m jupyterlab UTS-Notebook.ipynb
    ```
 
 Kedua CSV sumber sudah disertakan, jadi tidak perlu mengunduh dataset lagi. Folder proyek boleh dipindahkan atau diganti namanya selama susunan di dalamnya tetap utuh. Kode memakai path relatif, berjalan di CPU, dan akan melatih ulang kedua model saat **Run All**. Instalasi pustaka memerlukan internet; proses eksperimen membaca data lokal.
@@ -51,7 +51,15 @@ Untuk mencoba pesan lain setelah training, ubah daftar `pesan_sendiri` di bagian
 
 ## Dataset dan pembagian data
 
-Kami memakai **Super SMS Dataset** dari Salman, Ikram, dan Kaafar (2024), berisi 67.010 baris mentah dengan label `0 = ham` dan `1 = spam`. Sumber, versi berkas, dan fungsi kedua CSV dijelaskan di [dokumentasi dataset](data/README.md).
+Kami memakai **Super SMS Dataset** dari Salman, Ikram, dan Kaafar (2024), berisi 67.010 baris mentah dengan label `0 = ham` dan `1 = spam`.
+
+- **Sumber dataset:** repository peneliti [smspamresearch/spstudy](https://github.com/smspamresearch/spstudy).
+- **CSV yg dipakai:** [super_sms_dataset.csv pada commit a0889f3](https://github.com/smspamresearch/spstudy/blob/a0889f36fb59e23a7f853a6932485d93d18b8afc/Data/super_sms_dataset.csv).
+- **Publikasi pendamping:** [Investigating Evasive Techniques in SMS Spam Filtering: A Comparative Analysis of Machine Learning Models](https://doi.org/10.1109/ACCESS.2024.3364671), IEEE Access (2024).
+
+Kelompok kami memilih dataset ini karena isinya langsung sesuai dengan masalah spam SMS dan sudah memiliki label ham/spam, sehingga kami bisa fokus pada pengolahan teks serta perbandingan model. Jumlah datanya memungkinkan pembagian train, validation, dan test, sementara percobaan TF-IDF dengan model linear masih bisa dijalankan di CPU. Sumber peneliti dan versi CSV-nya juga jelas, sehingga data yg sama bisa dipakai saat eksperimen diulang. Hasil kami tetap terbatas pada koleksi ini, belum mewakili semua bahasa atau SMS baru.
+
+Fungsi kedua CSV, pemeriksaan kualitas, dan hash berkas dijelaskan di [dokumentasi dataset](data/README.md).
 
 Setelah pembersihan awal dan pengeluaran pola yg muncul lintas bagian, tersisa **66.288 SMS**: 46.301 untuk train, 9.955 untuk validation, dan 10.032 untuk test. Kedua model memakai pembagian data serta tiga fold yg sama. **Data test belum dipakai untuk evaluasi pada UTS ini.**
 
@@ -72,7 +80,8 @@ Kandidat memberi skor lebih tinggi pada percobaan ini. Namun, yg dibandingkan ad
 
 | Lokasi | Isi dan kegunaannya |
 |---|---|
-| `Spam_SMS_UTS.ipynb` | Alur percobaan beserta penjelasan dan hasil eksekusi. |
+| `UTS-Notebook.ipynb` | Alur percobaan beserta penjelasan dan hasil eksekusi. |
+| `Laporan/UTS-Laporan.pdf` | Laporan UTS Milestone 1 beserta tautan repository. |
 | `requirements.txt` | Versi pustaka yg dipakai untuk menjalankan notebook. |
 | `data/` | Dataset mentah, pembagian awal, dan dokumentasi sumber data. |
 | `hasil/preprocessing/` | Pembagian akhir serta catatan baris dan pola yg dikeluarkan. |
