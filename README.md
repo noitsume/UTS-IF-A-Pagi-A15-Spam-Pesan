@@ -23,31 +23,53 @@ Kode, penjelasan, dan keluaran tiap tahap bisa dilihat langsung di [notebook](UT
 
 ## Menjalankan notebook
 
-1. Unduh repository lewat **Code → Download ZIP**, lalu ekstrak seluruh isinya. Buka terminal di folder yg berisi `UTS-Notebook.ipynb`, `requirements.txt`, dan `data/`.
-2. Siapkan **Python 3.12**. Kami menyarankan environment terpisah supaya versi pustaka tugas ini tidak bercampur dengan proyek lain. Dengan Python 3.12 yg sudah aktif, jalankan:
+1. Unduh repository lewat **Code → Download ZIP**, lalu ekstrak seluruh isinya. Buka folder hasil ekstrak di VS Code. Notebook, `requirements.txt`, dan `data/` harus tetap berdampingan.
+2. Siapkan **Python 3.12**, lalu buat environment dan pasang seluruh pustaka dari terminal di folder proyek. Gunakan perintah sesuai sistem operasi:
 
-   ```sh
-   python -m venv .venv
+   **Windows (PowerShell atau Command Prompt):**
+
+   ```powershell
+   py -3.12 -m venv .venv
+   .\.venv\Scripts\python.exe -m pip install -r requirements.txt
    ```
 
-   Aktifkan lewat `.venv\Scripts\activate.bat` di Command Prompt Windows, atau `source .venv/bin/activate` di terminal macOS/Linux. Jika memakai VS Code, pilih interpreter Python di dalam `.venv`.
-
-3. Pasang pustaka dari terminal environment tersebut:
+   **macOS/Linux:**
 
    ```sh
-   python -m pip install -r requirements.txt
+   python3.12 -m venv .venv
+   ./.venv/bin/python -m pip install -r requirements.txt
    ```
 
-4. Buka notebook di VS Code dengan ekstensi Jupyter, pilih kernel dari environment tadi, lalu jalankan **Restart Kernel → Run All**. Jika memakai JupyterLab, jalankan:
+   Perintah instalasi langsung memakai Python di `.venv`, sehingga tidak bergantung pada environment yg aktif di terminal. Jika Python 3.12 belum ditemukan, pasang versi tersebut terlebih dahulu.
 
-   ```sh
-   python -m pip install jupyterlab
-   python -m jupyterlab UTS-Notebook.ipynb
-   ```
+3. Buka `UTS-Notebook.ipynb` dengan ekstensi Python dan Jupyter di VS Code. Klik **Select Kernel** di kanan atas notebook, lalu **Select Another Kernel → Python Environments → .venv (Python 3.12)**. Kalau daftar kernel langsung menampilkan `.venv`, pilih itu. Pemilihan interpreter di terminal/status bar saja belum memastikan kernel notebook sudah sama.
+4. Setelah instalasi selesai tanpa error dan kernel sudah sesuai, pilih **Restart Kernel → Run All**.
+
+Jika memakai JupyterLab, jalankan dua perintah berikut di Windows. Untuk macOS/Linux, ganti `.\.venv\Scripts\python.exe` dengan `./.venv/bin/python`.
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install jupyterlab
+.\.venv\Scripts\python.exe -m jupyterlab UTS-Notebook.ipynb
+```
 
 Kedua CSV sumber sudah disertakan, jadi tidak perlu mengunduh dataset lagi. Folder proyek boleh dipindahkan atau diganti namanya selama susunan di dalamnya tetap utuh. Kode memakai path relatif, berjalan di CPU, dan akan melatih ulang kedua model saat **Run All**. Instalasi pustaka memerlukan internet; proses eksperimen membaca data lokal.
 
 Untuk mencoba pesan lain setelah training, ubah daftar `pesan_sendiri` di bagian 8 dan jalankan sel itu saja. Hasilnya masuk ke `hasil/prediksi_sendiri/`.
+
+### Jika muncul `ModuleNotFoundError`
+
+Contohnya, `No module named 'joblib'` berarti kernel belum bisa mengimpor modul itu. Walaupun `pip install joblib` berhasil di terminal, paketnya bisa terpasang pada Python yg berbeda. `joblib` sudah tercantum di `requirements.txt` bersama pustaka lain yg dibutuhkan.
+
+Setelah memilih kernel `.venv` dengan Python 3.12, tambahkan **sel kode sementara di notebook** dan jalankan:
+
+```python
+import sys
+print(sys.executable)
+print(sys.version.split()[0])
+%pip install -r requirements.txt
+```
+
+Path yg tercetak seharusnya mengarah ke `.venv` proyek. [`%pip`](https://ipython.readthedocs.io/en/stable/interactive/magics.html#magic-pip) memasang paket ke Python milik kernel tersebut. Tunggu sampai instalasi berhasil, hapus sel sementara, lalu **Restart Kernel → Run All**. Jika instalasi gagal, periksa pesan error instalasinya dulu; mengulang Run All belum akan memperbaiki paket yg belum terpasang.
 
 ## Dataset dan pembagian data
 
